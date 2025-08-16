@@ -20,7 +20,7 @@ if (Environment.GetCommandLineArgs().Length > 1)
         }
         Directory.CreateDirectory(outputFolder);
         // Now we write all files
-        s.ExportSdat(outputFolder);
+        s.ExtractSdat(outputFolder);
     } else
     {
         Console.WriteLine("File " + sdatFile + " does not exist! Terminating runtime!!");

@@ -9,8 +9,9 @@
         public SdatStructure MainHeader;
         private List<byte[]> Files;
         public List<SeqInfo> Sequences;
+        public List<BankInfo> Banks;
 
-        public void ExportSdat(string output)
+        public void ExtractSdat(string output)
         {
             string path = "";
             // Start with Sequences
@@ -22,6 +23,141 @@
                 File.WriteAllBytes(path + "\\" + seq.Name + ".sseq", Files[(int)seq.FileId]);
                 Console.WriteLine("Exported sequence #" + seq.EntryId + " " + seq.Name);
             }
+
+            // Next up - Banks
+            Console.WriteLine("Exporting " + Banks.Count + " Banks...\n");
+            path = output + "\\Banks";
+            Directory.CreateDirectory(path);
+            foreach (var bnk in Banks)
+            {
+                File.WriteAllBytes(path + "\\" + bnk.Name + ".sbnk", Files[(int)bnk.FileId]);
+                Console.WriteLine("Exported sequence #" + bnk.EntryId + " " + bnk.Name);
+            }
+        }
+
+        private void LoadBankInfo(BinaryReader r)
+        {
+            uint[] EntryOffsets = new uint[0];
+            uint[] NameOffsets = new uint[0];
+            uint NoEntries = 0;
+            uint ActualEntryCount = 0;
+            Banks = new List<BankInfo>();
+            // Read INFO Block
+            r.BaseStream.Seek(MainHeader.InfoChunk.Offset, MainHeader.InfoChunk.SeekOrigin);
+            if (IS.CheckFormat(r.ReadBytes(4), "INFO"))
+            {
+                uint ChunkSize = r.ReadUInt32();
+                uint[] RecordOffsets = new uint[8];
+                for (int i = 0; i < 8; i++)
+                {
+                    RecordOffsets[i] = r.ReadUInt32() + MainHeader.InfoChunk.Offset;
+                }
+                r.BaseStream.Seek(RecordOffsets[(int)FileTypes.Bank], SeekOrigin.Begin);
+
+                // Read Info Offsets
+                Console.Write("Reading Bank Info Offsets... | ");
+                NoEntries = r.ReadUInt32();
+                EntryOffsets = new uint[NoEntries];
+                for (uint i = 0; i < NoEntries; i++)
+                {
+                    uint offset = r.ReadUInt32();
+                    if (offset != 0)
+                    {
+                        ActualEntryCount++;
+                        EntryOffsets[i] = offset + MainHeader.InfoChunk.Offset;
+                    }
+                    else
+                    {
+                        EntryOffsets[i] = offset;
+                    }
+
+                }
+                Console.WriteLine("Successfully read " + NoEntries + " entries!");
+            }
+            else
+            {
+                Console.WriteLine("Invalid INFO block. Runtime terminated.");
+                Environment.Exit(-3);
+            }
+
+            // Read SYMB Block (if exists)
+            if (MainHeader.ChunkCount != 3)
+            {
+                r.BaseStream.Seek(MainHeader.SymbChunk.Offset, MainHeader.SymbChunk.SeekOrigin);
+                if (IS.CheckFormat(r.ReadBytes(4), "SYMB"))
+                {
+                    uint ChunkSize = r.ReadUInt32();
+                    uint[] RecordOffsets = new uint[8];
+                    for (int i = 0; i < 8; i++)
+                    {
+                        RecordOffsets[i] = r.ReadUInt32() + MainHeader.SymbChunk.Offset;
+                    }
+                    r.BaseStream.Seek(RecordOffsets[(int)FileTypes.Bank], SeekOrigin.Begin);
+                    NoEntries = r.ReadUInt32();
+                    NameOffsets = new uint[NoEntries];
+                    for (uint i = 0; i < NoEntries; i++)
+                    {
+                        uint offset = r.ReadUInt32();
+                        if (offset != 0)
+                        {
+                            NameOffsets[i] = offset + MainHeader.SymbChunk.Offset;
+                        }
+                        else
+                        {
+                            NameOffsets[i] = 0;
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Invalid SYMB Chunk. Runtime terminated!");
+                    Environment.Exit(-4);
+                }
+            }
+            else
+            {
+                NameOffsets = new uint[NoEntries];
+                for (uint i = 0; i < NoEntries; i++)
+                {
+                    NameOffsets[i] = 0;
+                }
+            }
+            // Read and Get Info
+            Console.Write("Reading " + ActualEntryCount + " entries | ");
+            for (uint i = 0; i < NoEntries; i++)
+            {
+                if (EntryOffsets[i] != 0)
+                {
+                    BankInfo info = new BankInfo(i);
+                    r.BaseStream.Seek(EntryOffsets[i], SeekOrigin.Begin);
+                    info.Name = "Sequence_" + i;
+                    info.FileId = r.ReadUInt32();
+                    for(int j = 0; j < 4; j++)
+                    {
+                        info.WaveAssoc[j] = r.ReadUInt16();
+                    }
+
+                    if (NameOffsets[i] != 0)
+                    {
+                        r.BaseStream.Seek(NameOffsets[i], SeekOrigin.Begin);
+                        info.Name = "";
+                        while (true)
+                        {
+                            byte b = r.ReadByte();
+                            if (b != 0x00)
+                            {
+                                info.Name += (char)b;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                    }
+                    Banks.Add(info);
+                }
+            }
+            Console.WriteLine(" Successfully read all bank entries!");
         }
 
         private void LoadSequenceInfo(BinaryReader r)
@@ -224,6 +360,9 @@
 
                     // Load SequenceInfo
                     LoadSequenceInfo(r);
+
+                    // Load BankInfo
+                    LoadBankInfo(r);
                 }
                 else
                 {
@@ -295,6 +434,20 @@
         public SeqInfo(uint id)
         {
             EntryId = id;
+        }
+    }
+
+    public struct BankInfo
+    {
+        public uint EntryId;
+        public string Name;
+        public uint FileId;
+        public ushort[] WaveAssoc;
+
+        public BankInfo(uint id)
+        {
+            EntryId = id;
+            WaveAssoc = new ushort[4];
         }
     }
 }
