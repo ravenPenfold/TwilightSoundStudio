@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "DSSTCommon": {
+      "commandName": "Project",
+      "commandLineArgs": "Z:\\swan_sound_data.sdat"
+    }
+  }
+}
