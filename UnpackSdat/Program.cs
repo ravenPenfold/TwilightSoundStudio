@@ -1,4 +1,4 @@
-﻿using DSSTCommon.Formats;
+﻿using TwlSoundLibrary.Formats;
 // See https://aka.ms/new-console-template for more information
 
 // UnpackSdat.exe [<folder>] <sdat>

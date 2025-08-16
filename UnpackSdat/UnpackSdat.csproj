@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DSSTCommon\TwillightSound.csproj" />
+    <ProjectReference Include="..\TwlSoundLibrary\TwlSoundLibrary.csproj" />
   </ItemGroup>
 
 </Project>

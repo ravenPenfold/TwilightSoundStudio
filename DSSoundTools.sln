@@ -3,11 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36408.4
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwillightSound", "DSSTCommon\TwillightSound.csproj", "{4A580332-B168-427D-8E32-E782A3F89A16}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Unpackers", "Unpackers", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnpackSdat", "UnpackSdat\UnpackSdat.csproj", "{B15645B1-3B6C-44A8-9199-F03D29FE701E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwlSoundLibrary", "TwlSoundLibrary\TwlSoundLibrary.csproj", "{CF7F78CC-8484-E263-34E8-4AD66974E3F2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,14 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{4A580332-B168-427D-8E32-E782A3F89A16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4A580332-B168-427D-8E32-E782A3F89A16}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4A580332-B168-427D-8E32-E782A3F89A16}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4A580332-B168-427D-8E32-E782A3F89A16}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B15645B1-3B6C-44A8-9199-F03D29FE701E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B15645B1-3B6C-44A8-9199-F03D29FE701E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B15645B1-3B6C-44A8-9199-F03D29FE701E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B15645B1-3B6C-44A8-9199-F03D29FE701E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF7F78CC-8484-E263-34E8-4AD66974E3F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF7F78CC-8484-E263-34E8-4AD66974E3F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF7F78CC-8484-E263-34E8-4AD66974E3F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF7F78CC-8484-E263-34E8-4AD66974E3F2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

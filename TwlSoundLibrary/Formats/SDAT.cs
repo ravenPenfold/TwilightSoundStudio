@@ -1,4 +1,4 @@
-﻿namespace DSSTCommon.Formats
+﻿namespace TwlSoundLibrary.Formats
 {
     /// <summary>
     /// Handler for Sound Data Archives (*.sdat)
